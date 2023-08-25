@@ -5,28 +5,33 @@ import TurnInfo from "./turnInfo";
 import BattleInfo from "./battleInfo";
 import UnderBar from "./underBar";
 import HoneyComb from "./honeyComb";
-import { teamA } from "./data/fighters";
+import { teamA } from "./data/fightersData";
+import { teamB } from "./data/fightersData";
 import { useState } from "react";
 
 function App() {
-  const [charaA1, setCharaA1] = useState({
-    name: teamA[0].name,
-    hp: teamA[0].hp,
-    agl: teamA[0].agl,
-  });
-  const [charaA2, setCharaA2] = useState({
-    name: teamA[1].name,
-    hp: teamA[1].hp,
-    agl: teamA[1].agl,
-  });
-  const [charaA3, setCharaA3] = useState({
-    name: teamA[2].name,
-    hp: teamA[2].hp,
-    agl: teamA[2].agl,
-  });
 
-  const teamACharacters = [charaA1, charaA2, charaA3];
-  const teamBCharacters = teamACharacters;
+  const [teamACharacters, setTeamACharacters] = useState(
+    teamA.map((chara) => ({
+      name: chara.name,
+      hp: chara.hp,
+      agl: chara.agl,
+      def: chara.def,
+      move: chara.move,
+      disable: 0,
+    }))
+  );
+
+  const [teamBCharacters, setTeamBCharacters] = useState(
+    teamB.map((chara) => ({
+      name: chara.name,
+      hp: chara.hp,
+      agl: chara.agl,
+      def: chara.def,
+      move: chara.move,
+      disable: 0,
+    }))
+  );
 
   return (
     <div className="container">
