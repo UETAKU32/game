@@ -39,7 +39,7 @@ function App() {
     setTeamACharacters(newTeamA);
   };
 
-  const handleTeamBChange = newTeamB => {
+  const handleTeamB = newTeamB => {
     setTeamBCharacters(newTeamB);
   };
 

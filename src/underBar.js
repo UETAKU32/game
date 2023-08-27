@@ -1,10 +1,16 @@
 import React from 'react'
 
+const { useState } = React
+
 const UnderBar = ({ teamACharacters, onChange }) => {
 
-    const handleTeamA = (event) => {
-        const selectedCharacter = event.target.value;
-        handleTeamAChange(selectedCharacter);
+    const [selectedCharacter, setSelectedCharacter] = useState("");
+
+    const handleTeamA = () => {
+        if (selectedCharacter) {
+            handleTeamAChange(selectedCharacter);
+            setSelectedCharacter(""); // 選択をリセット
+        }
     };
 
     const handleTeamAChange = (characterName) => {
@@ -39,7 +45,7 @@ const UnderBar = ({ teamACharacters, onChange }) => {
                 </div>
             </div>
             <div className="col">
-                <select onChange={handleTeamA}>
+                <select value={selectedCharacter} onChange={(e) => setSelectedCharacter(e.target.value)}>
                     <option value="">キャラクターを選択してください</option>
                     {teamACharacters.map((chara) => (
                         <option key={chara.name} value={chara.name}>
@@ -47,10 +53,8 @@ const UnderBar = ({ teamACharacters, onChange }) => {
                         </option>
                     ))}
                 </select>
-            </div>
-            <div className="col">
-                <button onClick={handleTeamA} type="button" className="btn btn-primary">
-                    Do Order
+                <button onClick={handleTeamA} disabled={!selectedCharacter}>
+                    体力を減らす
                 </button>
             </div>
         </div>
