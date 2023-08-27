@@ -11,6 +11,7 @@ import { useState } from "react";
 
 function App() {
 
+  //キャラクターデータをuseStateに宣言
   const [teamACharacters, setTeamACharacters] = useState(
     teamA.map((chara) => ({
       name: chara.name,
@@ -21,7 +22,6 @@ function App() {
       disable: 0,
     }))
   );
-
   const [teamBCharacters, setTeamBCharacters] = useState(
     teamB.map((chara) => ({
       name: chara.name,
@@ -32,6 +32,17 @@ function App() {
       disable: 0,
     }))
   );
+
+
+//状態が変化した時に呼び出す関数を定義
+  const handleTeamA = newTeamA => {
+    setTeamACharacters(newTeamA);
+  };
+
+  const handleTeamBChange = newTeamB => {
+    setTeamBCharacters(newTeamB);
+  };
+
 
   return (
     <div className="container">
@@ -56,7 +67,10 @@ function App() {
         </div>
         <TeamFighters isTeamA={false} characters={teamBCharacters} />
       </div>
-      <UnderBar />
+      <UnderBar 
+      teamACharacters={teamACharacters} 
+      onChange={handleTeamA} 
+      />
     </div>
   );
 }
