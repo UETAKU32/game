@@ -10,7 +10,6 @@ import { teamB } from "./data/fightersData";
 import { useState } from "react";
 
 function App() {
-
   //キャラクターデータをuseStateに宣言
   const [teamACharacters, setTeamACharacters] = useState(
     teamA.map((chara) => ({
@@ -33,16 +32,17 @@ function App() {
     }))
   );
 
+  const [currentSelectedChara, setCurrentSelectedChara] = useState(null);
+  console.log({ currentSelectedChara });
 
-//状態が変化した時に呼び出す関数を定義
-  const handleTeamA = newTeamA => {
+  //状態が変化した時に呼び出す関数を定義
+  const handleTeamA = (newTeamA) => {
     setTeamACharacters(newTeamA);
   };
 
-  const handleTeamB = newTeamB => {
+  const handleTeamB = (newTeamB) => {
     setTeamBCharacters(newTeamB);
   };
-
 
   return (
     <div className="container">
@@ -61,16 +61,21 @@ function App() {
         </div>
       </div>
       <div className="row">
-        <TeamFighters isTeamA={true} characters={teamACharacters} />
+        <TeamFighters
+          isTeamA={true}
+          characters={teamACharacters}
+          onClickFighter={setCurrentSelectedChara}
+        />
         <div className="col-8 border border-3 border-dark">
           <HoneyComb size={55} rows={8} cols={8} />
         </div>
-        <TeamFighters isTeamA={false} characters={teamBCharacters} />
+        <TeamFighters
+          isTeamA={false}
+          characters={teamBCharacters}
+          onClickFighter={setCurrentSelectedChara}
+        />
       </div>
-      <UnderBar 
-      teamACharacters={teamACharacters} 
-      onChange={handleTeamA} 
-      />
+      <UnderBar teamACharacters={teamACharacters} onChange={handleTeamA} />
     </div>
   );
 }
