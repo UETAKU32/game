@@ -32,7 +32,11 @@ function App() {
     }))
   );
 
+  //キャラを選択している状態を保存する
   const [currentSelectedChara, setCurrentSelectedChara] = useState(null);
+  console.log(currentSelectedChara);
+
+  //ターン数をカウントする
   const [turnCount, setTurnCount] = useState(1);
 
   //状態が変化した時に呼び出す関数を定義
@@ -45,14 +49,12 @@ function App() {
   };
 
   const handleMove = () => {
-    //TODO: turnを1増やす
+    setTurnCount(turnCount+1);
   };
 
   const handleAttack = () => {
-    //TODO: turnを1増やす
+    setTurnCount(turnCount+1);
   };
-
-  console.log({ turnCount });
 
   return (
     <div className="container">
@@ -61,7 +63,7 @@ function App() {
           <TeamInfo isTeamA={true} />
         </div>
         <div className="col">
-          <TurnInfo />
+          <TurnInfo turnCount={turnCount}/>
         </div>
         <div className="col">
           <BattleInfo isTeamA={false} />
@@ -91,6 +93,7 @@ function App() {
         onChange={handleTeamA}
         onMove={handleMove}
         onAttack={handleAttack}
+        turnCount={turnCount}
       />
     </div>
   );

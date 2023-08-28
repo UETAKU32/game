@@ -5,7 +5,7 @@ const { useState } = React;
 const UnderBar = ({ teamACharacters, onChange, onMove, onAttack }) => {
   const [selectedCharacter, setSelectedCharacter] = useState("");
 
-  const handleTeamA = () => {
+  const hpDecrease = () => {
     if (selectedCharacter) {
       handleTeamAChange(selectedCharacter);
       setSelectedCharacter(""); // 選択をリセット
@@ -64,7 +64,7 @@ const UnderBar = ({ teamACharacters, onChange, onMove, onAttack }) => {
             </option>
           ))}
         </select>
-        <button onClick={handleTeamA} disabled={!selectedCharacter}>
+        <button onClick={hpDecrease} disabled={!selectedCharacter}>
           体力を減らす
         </button>
       </div>
