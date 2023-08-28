@@ -33,7 +33,7 @@ function App() {
   );
 
   const [currentSelectedChara, setCurrentSelectedChara] = useState(null);
-  console.log({ currentSelectedChara });
+  const [turnCount, setTurnCount] = useState(1);
 
   //状態が変化した時に呼び出す関数を定義
   const handleTeamA = (newTeamA) => {
@@ -43,6 +43,16 @@ function App() {
   const handleTeamB = (newTeamB) => {
     setTeamBCharacters(newTeamB);
   };
+
+  const handleMove = () => {
+    //TODO: turnを1増やす
+  };
+
+  const handleAttack = () => {
+    //TODO: turnを1増やす
+  };
+
+  console.log({ turnCount });
 
   return (
     <div className="container">
@@ -61,6 +71,7 @@ function App() {
         </div>
       </div>
       <div className="row">
+        {/**TODO:ターンによって、どちらからのTeamFightersは選択不可（色がdisabledで選択自体不可 or 選択するとアラートが出る） */}
         <TeamFighters
           isTeamA={true}
           characters={teamACharacters}
@@ -75,7 +86,12 @@ function App() {
           onClickFighter={setCurrentSelectedChara}
         />
       </div>
-      <UnderBar teamACharacters={teamACharacters} onChange={handleTeamA} />
+      <UnderBar
+        teamACharacters={teamACharacters}
+        onChange={handleTeamA}
+        onMove={handleMove}
+        onAttack={handleAttack}
+      />
     </div>
   );
 }
