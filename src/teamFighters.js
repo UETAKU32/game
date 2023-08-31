@@ -1,24 +1,24 @@
 import React from "react";
 import Fighter from "./fighter";
 
-const TeamFighters = ({ isTeamA, characters, onClickFighter }) => {
+const TeamFighters = ({ isTeamA, characters, onClickFighter, turnCount }) => {
+
+  const team = [];
+
+  characters.map((chara) => {
+    team.push(
+      <Fighter
+        isTeamA={isTeamA}
+        character={chara}
+        onClick={onClickFighter}
+        turnCount={turnCount}
+      />
+    )
+  }
+  );
   return (
     <div className="col-2">
-      <Fighter
-        isTeamA={isTeamA}
-        character={characters[0]}
-        onClick={onClickFighter}
-      />
-      <Fighter
-        isTeamA={isTeamA}
-        character={characters[1]}
-        onClick={onClickFighter}
-      />
-      <Fighter
-        isTeamA={isTeamA}
-        character={characters[2]}
-        onClick={onClickFighter}
-      />
+      {team}
     </div>
   );
 };

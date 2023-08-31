@@ -2,13 +2,14 @@ import React from "react";
 
 const { useState } = React;
 
-const UnderBar = ({ teamACharacters, onChange, onMove, onAttack }) => {
+const UnderBar = ({ teamACharacters, onChange, onMove, onAttack, turnCount}) => {
+    
   const [selectedCharacter, setSelectedCharacter] = useState("");
 
   const hpDecrease = () => {
     if (selectedCharacter) {
       handleTeamAChange(selectedCharacter);
-      setSelectedCharacter(""); // 選択をリセット
+      setSelectedCharacter(""); 
     }
   };
 
@@ -23,12 +24,14 @@ const UnderBar = ({ teamACharacters, onChange, onMove, onAttack }) => {
     onChange(updatedTeamA);
   };
 
+  const teamColor = turnCount%2 == 1 ? 'bg-danger' : 'bg-primary';
+  const currentPlayer = turnCount%2 == 1 ? 'TeamA' : 'TeamB';
+
   return (
     <div className="row">
       <div className="col">
-        <div className={`card text-white mb-2 bg-danger`}>
-          <div className="card-header">Team A</div>{" "}
-          {/**TODO: 現在のターンに操作できるチーム名 */}
+        <div className={`card text-white mb-2 ${teamColor}`}>
+          <div className="card-header">{currentPlayer}</div>
         </div>
       </div>
       <div className="col">

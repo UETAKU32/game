@@ -66,7 +66,7 @@ function App() {
           <TurnInfo turnCount={turnCount}/>
         </div>
         <div className="col">
-          <BattleInfo isTeamA={false} />
+          <BattleInfo turnCount={turnCount} />
         </div>
         <div className="col-2">
           <TeamInfo isTeamA={false} />
@@ -78,6 +78,7 @@ function App() {
           isTeamA={true}
           characters={teamACharacters}
           onClickFighter={setCurrentSelectedChara}
+          turnCount={turnCount}
         />
         <div className="col-8 border border-3 border-dark">
           <HoneyComb size={55} rows={8} cols={8} />
@@ -86,6 +87,7 @@ function App() {
           isTeamA={false}
           characters={teamBCharacters}
           onClickFighter={setCurrentSelectedChara}
+          turnCount={turnCount}
         />
       </div>
       <UnderBar
