@@ -18,7 +18,10 @@ function App() {
       agl: chara.agl,
       def: chara.def,
       move: chara.move,
+      image: chara.image,
       disable: 0,
+      x: Math.floor(Math.random() * 8),
+      y: Math.floor(Math.random() * 8),
     }))
   );
   const [teamBCharacters, setTeamBCharacters] = useState(
@@ -28,7 +31,10 @@ function App() {
       agl: chara.agl,
       def: chara.def,
       move: chara.move,
+      image: chara.image,
       disable: 0,
+      x: Math.floor(Math.random() * 8),
+      y: Math.floor(Math.random() * 8),
     }))
   );
 
@@ -49,11 +55,11 @@ function App() {
   };
 
   const handleMove = () => {
-    setTurnCount(turnCount+1);
+    setTurnCount(turnCount + 1);
   };
 
   const handleAttack = () => {
-    setTurnCount(turnCount+1);
+    setTurnCount(turnCount + 1);
   };
 
   return (
@@ -63,7 +69,7 @@ function App() {
           <TeamInfo isTeamA={true} />
         </div>
         <div className="col">
-          <TurnInfo turnCount={turnCount}/>
+          <TurnInfo turnCount={turnCount} />
         </div>
         <div className="col">
           <BattleInfo turnCount={turnCount} />
@@ -81,7 +87,7 @@ function App() {
           turnCount={turnCount}
         />
         <div className="col-8 border border-3 border-dark">
-          <HoneyComb size={55} rows={8} cols={8} />
+          <HoneyComb size={55} rows={8} cols={8} teamACharacters={teamACharacters} teamBCharacters={teamBCharacters}/>
         </div>
         <TeamFighters
           isTeamA={false}
@@ -97,6 +103,44 @@ function App() {
         onAttack={handleAttack}
         turnCount={turnCount}
       />
+      <div>
+        <img src={
+          teamACharacters[0].image.url}
+          alt="画像"
+          width={90}
+          height={100}
+        />
+        <img src={
+          teamACharacters[1].image.url}
+          alt="画像"
+          width={90}
+          height={100}
+        />
+        <img src={
+          teamACharacters[2].image.url}
+          alt="画像"
+          width={90}
+          height={100}
+        />
+        <img src={
+          teamBCharacters[0].image.url}
+          alt="画像"
+          width={90}
+          height={100}
+        />
+        <img src={
+          teamBCharacters[1].image.url}
+          alt="画像"
+          width={90}
+          height={100}
+        />
+        <img src={
+          teamBCharacters[2].image.url}
+          alt="画像"
+          width={90}
+          height={100}
+        />
+      </div>
     </div>
   );
 }

@@ -43,14 +43,14 @@ const UnderBar = ({ teamACharacters, onChange, onMove, onAttack, turnCount}) => 
             data-bs-toggle="dropdown"
             aria-expanded="false"
           >
-            Select Action
+            アクションを選択
           </button>
           <ul className="dropdown-menu" aria-labelledby="dropdownMenuButton">
             <li className="dropdown-item" onClick={onAttack}>
-              Attack
+              攻撃
             </li>
             <li className="dropdown-item" onClick={onMove}>
-              Move
+              移動
             </li>
           </ul>
         </div>

@@ -8,6 +8,7 @@ const TeamFighters = ({ isTeamA, characters, onClickFighter, turnCount }) => {
   characters.map((chara) => {
     team.push(
       <Fighter
+        key={chara.name}
         isTeamA={isTeamA}
         character={chara}
         onClick={onClickFighter}

@@ -32,6 +32,7 @@ const MakeHEX = ({ size, x, y ,row ,col}) => {
             onClick={handleClick}
             style={{ cursor: 'pointer' }}
         />
+        
     )
 }
 
