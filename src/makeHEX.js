@@ -1,6 +1,6 @@
 import React from "react";
 
-const MakeHEX = ({ size, x, y, row, col, existChara }) => {
+const MakeHEX = ({ size, x, y, row, col, existChara, canMove }) => {
   //中心点より各頂点への座標を計算
   const points = [
     [0, size],
@@ -20,11 +20,19 @@ const MakeHEX = ({ size, x, y, row, col, existChara }) => {
     window.alert(clickedCoordinates);
   };
 
+  const getPolygonColor = () => {
+    if (existChara) return "red";
+    if (canMove) return "yellow";
+    return "lightgreen";
+  };
+
+  const polygonColor = getPolygonColor();
+
   return (
     //HEXを描画する
     <polygon
       points={pointsString}
-      fill={existChara ? "red" : "lightgreen"}
+      fill={polygonColor}
       stroke="black"
       strokeWidth="2"
       transform={`translate(${x}, ${y})`}

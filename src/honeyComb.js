@@ -9,6 +9,7 @@ const HoneyComb = ({
   teamACharacters,
   teamBCharacters,
   selectedChara,
+  gameStatus,
 }) => {
   const honeycomb = [];
 
@@ -27,6 +28,12 @@ const HoneyComb = ({
       const existChara =
         selectedChara && selectedChara.x == row && selectedChara.y == col;
 
+      const canMove =
+        selectedChara &&
+        gameStatus == "MOVE_SELECTION" &&
+        selectedChara.x == row - 1 &&
+        selectedChara.y == col;
+
       honeycomb.push(
         <>
           <MakeHEX
@@ -37,6 +44,7 @@ const HoneyComb = ({
             row={row}
             col={col}
             existChara={existChara}
+            canMove={canMove}
           />
         </>
       );

@@ -110,6 +110,7 @@ function App() {
             teamACharacters={teamACharacters}
             teamBCharacters={teamBCharacters}
             selectedChara={currentSelectedChara}
+            gameStatus={gameStatus}
           />
         </div>
         <TeamFighters
