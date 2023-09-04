@@ -87,7 +87,14 @@ function App() {
           turnCount={turnCount}
         />
         <div className="col-8 border border-3 border-dark">
-          <HoneyComb size={55} rows={8} cols={8} teamACharacters={teamACharacters} teamBCharacters={teamBCharacters}/>
+          <HoneyComb
+            size={55}
+            rows={8}
+            cols={8}
+            teamACharacters={teamACharacters}
+            teamBCharacters={teamBCharacters}
+            selectedChara={currentSelectedChara}
+          />
         </div>
         <TeamFighters
           isTeamA={false}
