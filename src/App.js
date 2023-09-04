@@ -103,44 +103,6 @@ function App() {
         onAttack={handleAttack}
         turnCount={turnCount}
       />
-      <div>
-        <img src={
-          teamACharacters[0].image.url}
-          alt="画像"
-          width={90}
-          height={100}
-        />
-        <img src={
-          teamACharacters[1].image.url}
-          alt="画像"
-          width={90}
-          height={100}
-        />
-        <img src={
-          teamACharacters[2].image.url}
-          alt="画像"
-          width={90}
-          height={100}
-        />
-        <img src={
-          teamBCharacters[0].image.url}
-          alt="画像"
-          width={90}
-          height={100}
-        />
-        <img src={
-          teamBCharacters[1].image.url}
-          alt="画像"
-          width={90}
-          height={100}
-        />
-        <img src={
-          teamBCharacters[2].image.url}
-          alt="画像"
-          width={90}
-          height={100}
-        />
-      </div>
     </div>
   );
 }
