@@ -45,6 +45,9 @@ function App() {
   //ターン数をカウントする
   const [turnCount, setTurnCount] = useState(1);
 
+  //「ユーザに求める操作」を管理するstate
+  //CHARACTER_SELECTION -> ACTION_SELECTION -> MOVE_SELECTION -> NEXT -> CHARACTER_SELECTION -> ACTION_SELECTION -> ..
+  const [gameStatus, setGameStatus] = useState("CHARACTER_SELECTION");
   //状態が変化した時に呼び出す関数を定義
   const handleTeamA = (newTeamA) => {
     setTeamACharacters(newTeamA);
@@ -55,11 +58,24 @@ function App() {
   };
 
   const handleMove = () => {
-    setTurnCount(turnCount + 1);
+    if (!currentSelectedChara) {
+      alert("キャラクターを先に選択してください");
+      return;
+    }
+    setGameStatus("MOVE_SELECTION");
   };
 
   const handleAttack = () => {
-    setTurnCount(turnCount + 1);
+    if (!currentSelectedChara) {
+      alert("キャラクターを先に選択してください");
+      return;
+    }
+    setGameStatus("ATTACK_SELECTION");
+  };
+
+  const onClickFighter = (clickedFighter) => {
+    setCurrentSelectedChara(clickedFighter);
+    setGameStatus("ACTION_SELECTION");
   };
 
   return (
@@ -69,7 +85,7 @@ function App() {
           <TeamInfo isTeamA={true} />
         </div>
         <div className="col">
-          <TurnInfo turnCount={turnCount} />
+          <TurnInfo turnCount={turnCount} gameStatus={gameStatus} />
         </div>
         <div className="col">
           <BattleInfo turnCount={turnCount} />
@@ -83,7 +99,7 @@ function App() {
         <TeamFighters
           isTeamA={true}
           characters={teamACharacters}
-          onClickFighter={setCurrentSelectedChara}
+          onClickFighter={onClickFighter}
           turnCount={turnCount}
         />
         <div className="col-8 border border-3 border-dark">
