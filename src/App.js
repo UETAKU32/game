@@ -20,8 +20,8 @@ function App() {
       move: chara.move,
       image: chara.image,
       disable: 0,
-      x: Math.floor(Math.random() * 8),
-      y: Math.floor(Math.random() * 8),
+      row: Math.floor(Math.random() * 8),
+      col: Math.floor(Math.random() * 8),
     }))
   );
   const [teamBCharacters, setTeamBCharacters] = useState(
@@ -33,14 +33,13 @@ function App() {
       move: chara.move,
       image: chara.image,
       disable: 0,
-      x: Math.floor(Math.random() * 8),
-      y: Math.floor(Math.random() * 8),
+      row: Math.floor(Math.random() * 8),
+      col: Math.floor(Math.random() * 8),
     }))
   );
 
   //キャラを選択している状態を保存する
   const [currentSelectedChara, setCurrentSelectedChara] = useState(null);
-  console.log(currentSelectedChara);
 
   //ターン数をカウントする
   const [turnCount, setTurnCount] = useState(1);

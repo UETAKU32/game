@@ -1,6 +1,6 @@
 import React from "react";
 import MakeHEX from "./makeHEX";
-import CharactersDisplay from "./CharactersDisplay";
+import FightersDisplay from "./FightersDisplay";
 
 const HoneyComb = ({
   size,
@@ -17,6 +17,23 @@ const HoneyComb = ({
   const hexWidth = Math.sqrt(3) * size;
   const hexHeight = size * 2;
 
+  const confirmAdjacent = (row, col) => {
+    const adjacentHEX = [];
+    adjacentHEX.push([row - 1, col], [row, col - 1], [row + 1, col], [row, col + 1]);
+    if (col % 2 == 1) {
+      adjacentHEX.push([row + 1, col + 1], [row + 1, col - 1]);
+    } else {
+      adjacentHEX.push([row - 1, col - 1], [row - 1, col + 1]);
+    }
+    return adjacentHEX
+  }
+
+
+  let adjacent = []
+  if (selectedChara) {
+    adjacent = confirmAdjacent(selectedChara.row, selectedChara.col);
+  }
+
   //row col の蜂の巣型盤面を作成
   for (let row = 0; row < rows; row++) {
     for (let col = 0; col < cols; col++) {
@@ -26,13 +43,13 @@ const HoneyComb = ({
       const y = col * 1.5 * size + size + 2;
 
       const existChara =
-        selectedChara && selectedChara.x == row && selectedChara.y == col;
+        selectedChara && selectedChara.row == row && selectedChara.col == col;
 
       const canMove =
         selectedChara &&
         gameStatus == "MOVE_SELECTION" &&
-        selectedChara.x == row - 1 &&
-        selectedChara.y == col;
+        adjacent.some(hex => hex[0] == row && hex[1] == col)
+
 
       honeycomb.push(
         <>
@@ -59,16 +76,16 @@ const HoneyComb = ({
       style={{ display: "block", margin: "auto" }}
     >
       {honeycomb}
-      <CharactersDisplay
+      <FightersDisplay
         characters={teamACharacters}
         hexWidth={hexWidth}
         hexHeight={hexHeight}
-      ></CharactersDisplay>
-      <CharactersDisplay
+      />
+      <FightersDisplay
         characters={teamBCharacters}
         hexWidth={hexWidth}
         hexHeight={hexHeight}
-      ></CharactersDisplay>
+      />
     </svg>
   );
 };
