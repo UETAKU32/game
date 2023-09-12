@@ -17,6 +17,7 @@ const HoneyComb = ({
   const hexWidth = Math.sqrt(3) * size;
   const hexHeight = size * 2;
 
+  //隣接したHEXを求める関数
   const confirmAdjacent = (row, col) => {
     const adjacentHEX = [];
     adjacentHEX.push([row - 1, col], [row, col - 1], [row + 1, col], [row, col + 1]);
@@ -28,11 +29,38 @@ const HoneyComb = ({
     return adjacentHEX
   }
 
+  //BFSを使用し、移動可能な範囲を算出する関数
+  const findMoveRange = (startRow, startCol, range) => {
+    const visited = new Set();
+    const queue = [[startRow, startCol, 0]]; // [row, col, moves]
 
-  let adjacent = []
-  if (selectedChara) {
-    adjacent = confirmAdjacent(selectedChara.row, selectedChara.col);
+    while (queue.length > 0) {
+      const [currentRow, currentCol, moves] = queue.shift();
+
+      if (moves === range) {
+        continue;
+      }
+
+      const neighbors = confirmAdjacent(currentRow, currentCol);
+      for (const [nextRow, nextCol] of neighbors) {
+        const nextCell = [nextRow, nextCol];
+
+        if (!visited.has(nextCell)) {
+          visited.add(nextCell);
+          queue.push([nextRow, nextCol, moves + 1]);
+        }
+      }
+    }
+
+    return Array.from(visited);
   }
+
+  let moveRange = []
+  if (selectedChara) {
+    moveRange = findMoveRange(selectedChara.row, selectedChara.col, selectedChara.agl);
+  }
+
+
 
   //row col の蜂の巣型盤面を作成
   for (let row = 0; row < rows; row++) {
@@ -48,7 +76,7 @@ const HoneyComb = ({
       const canMove =
         selectedChara &&
         gameStatus == "MOVE_SELECTION" &&
-        adjacent.some(hex => hex[0] == row && hex[1] == col)
+        moveRange.some(hex => hex[0] == row && hex[1] == col)
 
 
       honeycomb.push(
