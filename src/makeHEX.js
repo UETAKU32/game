@@ -1,6 +1,17 @@
 import React from "react";
 
-const MakeHEX = ({ size, x, y, row, col, teamACharacters, existChara, selectedChara, canMove, coordinateChange }) => {
+const MakeHEX = ({
+  size,
+  x,
+  y,
+  row,
+  col,
+  allCharactersStatus,
+  existChara,
+  selectedChara,
+  canMove,
+  onMove,
+}) => {
   //中心点より各頂点への座標を計算
   const points = [
     [0, size],
@@ -16,9 +27,9 @@ const MakeHEX = ({ size, x, y, row, col, teamACharacters, existChara, selectedCh
 
   const handleClick = () => {
     // クリック時の処理 キャラの移動
-    if (canMove){
-    coordinateChange(teamACharacters, selectedChara, row, col);
-    };
+    if (canMove) {
+      onMove(allCharactersStatus, selectedChara, row, col);
+    }
   };
 
   const getPolygonColor = () => {

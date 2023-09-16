@@ -11,8 +11,8 @@ import { useState } from "react";
 
 function App() {
   //キャラクターデータをuseStateに宣言
-  const [teamACharacters, setTeamACharacters] = useState(
-    teamA.map((chara) => ({
+  const [allCharactersStatus, setAllCharactersStatus] = useState({
+    teamA: teamA.map((chara) => ({
       name: chara.name,
       hp: chara.hp,
       agl: chara.agl,
@@ -22,10 +22,8 @@ function App() {
       disable: 0,
       row: Math.floor(Math.random() * 8),
       col: Math.floor(Math.random() * 8),
-    }))
-  );
-  const [teamBCharacters, setTeamBCharacters] = useState(
-    teamB.map((chara) => ({
+    })),
+    teamB: teamB.map((chara) => ({
       name: chara.name,
       hp: chara.hp,
       agl: chara.agl,
@@ -35,8 +33,8 @@ function App() {
       disable: 0,
       row: Math.floor(Math.random() * 8),
       col: Math.floor(Math.random() * 8),
-    }))
-  );
+    })),
+  });
 
   //キャラを選択している状態を保存する
   const [currentSelectedChara, setCurrentSelectedChara] = useState(null);
@@ -48,9 +46,25 @@ function App() {
   //CHARACTER_SELECTION -> ACTION_SELECTION -> MOVE_SELECTION -> NEXT -> CHARACTER_SELECTION -> ACTION_SELECTION -> ..
   const [gameStatus, setGameStatus] = useState("CHARACTER_SELECTION");
 
-  //状態が変化した時に呼び出す関数を定義
-  const handleTeamA = (newTeamA) => {
-    setTeamACharacters(newTeamA);
+  //座標の変更
+  const coordinateChange = (allCharactersStatus, selectedChara, row, col) => {
+    const updatedTeamA = allCharactersStatus.teamA.map((chara) => {
+      if (chara.name === selectedChara.name) {
+        const updatedRow = row;
+        const updatedCol = col;
+        return { ...chara, row: updatedRow, col: updatedCol };
+      }
+      return chara;
+    });
+    const updatedTeamB = allCharactersStatus.teamB.map((chara) => {
+      if (chara.name === selectedChara.name) {
+        const updatedRow = row;
+        const updatedCol = col;
+        return { ...chara, row: updatedRow, col: updatedCol };
+      }
+      return chara;
+    });
+    setAllCharactersStatus({ teamA: updatedTeamA, teamB: updatedTeamB });
   };
 
   const handleMove = () => {
@@ -93,7 +107,7 @@ function App() {
       <div className="row">
         <TeamFighters
           isTeamA={true}
-          characters={teamACharacters}
+          characters={allCharactersStatus.teamA}
           onClickFighter={onClickFighter}
           turnCount={turnCount}
         />
@@ -102,23 +116,22 @@ function App() {
             size={55}
             rows={8}
             cols={8}
-            teamACharacters={teamACharacters}
-            teamBCharacters={teamBCharacters}
+            allCharactersStatus={allCharactersStatus}
             selectedChara={currentSelectedChara}
             gameStatus={gameStatus}
-            onChange={handleTeamA}
+            onMove={coordinateChange}
           />
         </div>
         <TeamFighters
           isTeamA={false}
-          characters={teamBCharacters}
+          characters={allCharactersStatus.teamB}
           onClickFighter={setCurrentSelectedChara}
           turnCount={turnCount}
         />
       </div>
       <UnderBar
-        teamACharacters={teamACharacters}
-        onChange={handleTeamA}
+        teamACharacters={allCharactersStatus.teamA}
+        onChange={coordinateChange}
         onMove={handleMove}
         onAttack={handleAttack}
         turnCount={turnCount}
