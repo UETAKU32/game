@@ -6,11 +6,10 @@ const HoneyComb = ({
   size,
   rows,
   cols,
-  teamACharacters,
-  teamBCharacters,
+  allCharactersStatus,
   selectedChara,
   gameStatus,
-  onChange,
+  onMove,
 }) => {
   const honeycomb = [];
 
@@ -21,14 +20,19 @@ const HoneyComb = ({
   //隣接したHEXを求める関数
   const confirmAdjacent = (row, col) => {
     const adjacentHEX = [];
-    adjacentHEX.push([row - 1, col], [row, col - 1], [row + 1, col], [row, col + 1]);
+    adjacentHEX.push(
+      [row - 1, col],
+      [row, col - 1],
+      [row + 1, col],
+      [row, col + 1]
+    );
     if (col % 2 == 1) {
       adjacentHEX.push([row + 1, col + 1], [row + 1, col - 1]);
     } else {
       adjacentHEX.push([row - 1, col - 1], [row - 1, col + 1]);
     }
-    return adjacentHEX
-  }
+    return adjacentHEX;
+  };
 
   //BFSを使用し、移動可能な範囲を算出して二重配列として保存する関数
   const findMoveRange = (startRow, startCol, range) => {
@@ -50,27 +54,17 @@ const HoneyComb = ({
       }
     }
     return Array.from(visited);
-  }
-
-  //ファイターの移動、攻撃可能範囲を配列として記録しておく
-  let moveRange = []
-  if (selectedChara) {
-    moveRange = findMoveRange(selectedChara.row, selectedChara.col, selectedChara.agl);
-  }
-
-  //座標の変更
-  const coordinateChange = (team, selectedChara, row, col,) => {
-    const updatedTeam = team.map((chara) => {
-      if (chara.name === selectedChara.name) {
-        const updatedRow = row;
-        const updatedCol = col;
-        return { ...chara, row: updatedRow, col: updatedCol };
-      }
-      return chara;
-    });
-    onChange(updatedTeam);
   };
 
+  //ファイターの移動、攻撃可能範囲を配列として記録しておく
+  let moveRange = [];
+  if (selectedChara) {
+    moveRange = findMoveRange(
+      selectedChara.row,
+      selectedChara.col,
+      selectedChara.agl
+    );
+  }
 
   //row col の蜂の巣型盤面を作成
   for (let row = 0; row < rows; row++) {
@@ -86,8 +80,7 @@ const HoneyComb = ({
       const canMove =
         selectedChara &&
         gameStatus == "MOVE_SELECTION" &&
-        moveRange.some(hex => hex[0] == row && hex[1] == col)
-
+        moveRange.some((hex) => hex[0] == row && hex[1] == col);
 
       honeycomb.push(
         <>
@@ -98,11 +91,11 @@ const HoneyComb = ({
             y={y}
             row={row}
             col={col}
-            teamACharacters={teamACharacters}
+            allCharactersStatus={allCharactersStatus}
             existChara={existChara}
             selectedChara={selectedChara}
             canMove={canMove}
-            coordinateChange ={coordinateChange}
+            onMove={onMove}
           />
         </>
       );
@@ -118,12 +111,12 @@ const HoneyComb = ({
     >
       {honeycomb}
       <FightersDisplay
-        characters={teamACharacters}
+        characters={allCharactersStatus.teamA}
         hexWidth={hexWidth}
         hexHeight={hexHeight}
       />
       <FightersDisplay
-        characters={teamBCharacters}
+        characters={allCharactersStatus.teamB}
         hexWidth={hexWidth}
         hexHeight={hexHeight}
       />
