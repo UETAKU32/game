@@ -10,6 +10,7 @@ const HoneyComb = ({
   teamBCharacters,
   selectedChara,
   gameStatus,
+  onChange,
 }) => {
   const honeycomb = [];
 
@@ -29,37 +30,46 @@ const HoneyComb = ({
     return adjacentHEX
   }
 
-  //BFSを使用し、移動可能な範囲を算出する関数
+  //BFSを使用し、移動可能な範囲を算出して二重配列として保存する関数
   const findMoveRange = (startRow, startCol, range) => {
     const visited = new Set();
     const queue = [[startRow, startCol, 0]]; // [row, col, moves]
 
     while (queue.length > 0) {
       const [currentRow, currentCol, moves] = queue.shift();
-
       if (moves === range) {
         continue;
       }
-
       const neighbors = confirmAdjacent(currentRow, currentCol);
       for (const [nextRow, nextCol] of neighbors) {
         const nextCell = [nextRow, nextCol];
-
         if (!visited.has(nextCell)) {
           visited.add(nextCell);
           queue.push([nextRow, nextCol, moves + 1]);
         }
       }
     }
-
     return Array.from(visited);
   }
 
+  //ファイターの移動、攻撃可能範囲を配列として記録しておく
   let moveRange = []
   if (selectedChara) {
     moveRange = findMoveRange(selectedChara.row, selectedChara.col, selectedChara.agl);
   }
 
+  //座標の変更
+  const coordinateChange = (team, selectedChara, row, col,) => {
+    const updatedTeam = team.map((chara) => {
+      if (chara.name === selectedChara.name) {
+        const updatedRow = row;
+        const updatedCol = col;
+        return { ...chara, row: updatedRow, col: updatedCol };
+      }
+      return chara;
+    });
+    onChange(updatedTeam);
+  };
 
 
   //row col の蜂の巣型盤面を作成
@@ -88,8 +98,11 @@ const HoneyComb = ({
             y={y}
             row={row}
             col={col}
+            teamACharacters={teamACharacters}
             existChara={existChara}
+            selectedChara={selectedChara}
             canMove={canMove}
+            coordinateChange ={coordinateChange}
           />
         </>
       );

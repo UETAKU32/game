@@ -47,13 +47,10 @@ function App() {
   //「ユーザに求める操作」を管理するstate
   //CHARACTER_SELECTION -> ACTION_SELECTION -> MOVE_SELECTION -> NEXT -> CHARACTER_SELECTION -> ACTION_SELECTION -> ..
   const [gameStatus, setGameStatus] = useState("CHARACTER_SELECTION");
+
   //状態が変化した時に呼び出す関数を定義
   const handleTeamA = (newTeamA) => {
     setTeamACharacters(newTeamA);
-  };
-
-  const handleTeamB = (newTeamB) => {
-    setTeamBCharacters(newTeamB);
   };
 
   const handleMove = () => {
@@ -94,7 +91,6 @@ function App() {
         </div>
       </div>
       <div className="row">
-        {/**TODO:ターンによって、どちらからのTeamFightersは選択不可（色がdisabledで選択自体不可 or 選択するとアラートが出る） */}
         <TeamFighters
           isTeamA={true}
           characters={teamACharacters}
@@ -110,6 +106,7 @@ function App() {
             teamBCharacters={teamBCharacters}
             selectedChara={currentSelectedChara}
             gameStatus={gameStatus}
+            onChange={handleTeamA}
           />
         </div>
         <TeamFighters
