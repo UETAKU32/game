@@ -10,6 +10,7 @@ const HoneyComb = ({
   selectedChara,
   gameStatus,
   onMove,
+  onFinish,
 }) => {
   const honeycomb = [];
 
@@ -96,6 +97,7 @@ const HoneyComb = ({
             selectedChara={selectedChara}
             canMove={canMove}
             onMove={onMove}
+            onFinish={onFinish}
           />
         </>
       );

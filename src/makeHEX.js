@@ -11,6 +11,7 @@ const MakeHEX = ({
   selectedChara,
   canMove,
   onMove,
+  onFinish,
 }) => {
   //中心点より各頂点への座標を計算
   const points = [
@@ -29,6 +30,7 @@ const MakeHEX = ({
     // クリック時の処理 キャラの移動
     if (canMove) {
       onMove(allCharactersStatus, selectedChara, row, col);
+      onFinish();
     }
   };
 

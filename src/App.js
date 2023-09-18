@@ -88,6 +88,13 @@ function App() {
     setGameStatus("ACTION_SELECTION");
   };
 
+  //手番が終了したら呼び出し、ターン数を追加し、状態をリセットする
+  const turnFinish = () => {
+    setCurrentSelectedChara(null);
+    setTurnCount(turnCount + 1);
+    setGameStatus("CHARACTER_SELECTION");
+  };
+
   return (
     <div className="container">
       <div className="row">
@@ -120,6 +127,7 @@ function App() {
             selectedChara={currentSelectedChara}
             gameStatus={gameStatus}
             onMove={coordinateChange}
+            onFinish={turnFinish}
           />
         </div>
         <TeamFighters
@@ -130,7 +138,7 @@ function App() {
         />
       </div>
       <UnderBar
-        teamACharacters={allCharactersStatus.teamA}
+        allCharactersStatus={allCharactersStatus}
         onChange={coordinateChange}
         onMove={handleMove}
         onAttack={handleAttack}
