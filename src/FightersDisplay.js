@@ -1,6 +1,6 @@
 import React from 'react'
 
-const FightersDisplay = ({characters, hexWidth, hexHeight}) => {
+const FightersDisplay = ({characters, hexWidth, hexHeight,}) => {
 
 
   const characterDisplay = [];
@@ -13,6 +13,7 @@ const FightersDisplay = ({characters, hexWidth, hexHeight}) => {
         width="90" // 画像の幅
         height="100" // 画像の高さ
         xlinkHref={chara.image.url} // 画像のURLを指定
+        style={{pointerEvents: "none" }}
       />
     )
     ))

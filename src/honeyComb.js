@@ -36,7 +36,7 @@ const HoneyComb = ({
   };
 
   //BFSを使用し、移動可能な範囲を算出して二重配列として保存する関数
-  const findMoveRange = (startRow, startCol, range) => {
+  const findRange = (startRow, startCol, range) => {
     const visited = new Set();
     const queue = [[startRow, startCol, 0]]; // [row, col, moves]
 
@@ -57,13 +57,22 @@ const HoneyComb = ({
     return Array.from(visited);
   };
 
-  //ファイターの移動、攻撃可能範囲を配列として記録しておく
+  //ファイターの移動可能範囲を配列として記録しておく
   let moveRange = [];
   if (selectedChara) {
-    moveRange = findMoveRange(
+    moveRange = findRange(
       selectedChara.row,
       selectedChara.col,
       selectedChara.agl
+    );
+  }
+  //ファイターの攻撃可能範囲を配列として記録しておく
+  let attackRange = [];
+  if (selectedChara) {
+    attackRange = findRange(
+      selectedChara.row,
+      selectedChara.col,
+      selectedChara.move.range
     );
   }
 
@@ -75,13 +84,27 @@ const HoneyComb = ({
         row * hexWidth + (col % 2 === 1 ? hexWidth / 2 : 0) + hexWidth / 2 + 2;
       const y = col * 1.5 * size + size + 2;
 
-      const existChara =
+      //選択されたファイターの座標を保存
+      const existSelectedChara =
         selectedChara && selectedChara.row == row && selectedChara.col == col;
 
+      //選択されたファイターの移動可能範囲を保存
       const canMove =
         selectedChara &&
         gameStatus == "MOVE_SELECTION" &&
         moveRange.some((hex) => hex[0] == row && hex[1] == col);
+
+      //選択されたファイターの攻撃可能範囲を保存
+      const canAttack =
+        selectedChara &&
+        gameStatus == "ATTACK_SELECTION" &&
+        attackRange.some((hex) => hex[0] == row && hex[1] == col);
+
+      //HEXにファイターが存在しているかどうかを記録する
+      const existChara = Object.values(allCharactersStatus).some(team => 
+        team.some(fighter => fighter.row === row && fighter.col === col)
+      );
+
 
       honeycomb.push(
         <>
@@ -93,10 +116,12 @@ const HoneyComb = ({
             row={row}
             col={col}
             allCharactersStatus={allCharactersStatus}
+            existSelectedChara={existSelectedChara}
             existChara={existChara}
             selectedChara={selectedChara}
             canMove={canMove}
             onMove={onMove}
+            canAttack={canAttack}
             onFinish={onFinish}
           />
         </>

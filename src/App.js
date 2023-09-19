@@ -46,7 +46,7 @@ function App() {
   //CHARACTER_SELECTION -> ACTION_SELECTION -> MOVE_SELECTION -> NEXT -> CHARACTER_SELECTION -> ACTION_SELECTION -> ..
   const [gameStatus, setGameStatus] = useState("CHARACTER_SELECTION");
 
-  //座標の変更
+  //座標の変更の関数
   const coordinateChange = (allCharactersStatus, selectedChara, row, col) => {
     const updatedTeamA = allCharactersStatus.teamA.map((chara) => {
       if (chara.name === selectedChara.name) {
@@ -67,6 +67,7 @@ function App() {
     setAllCharactersStatus({ teamA: updatedTeamA, teamB: updatedTeamB });
   };
 
+  //選択する順番（フェイズ）を制御する関数
   const handleMove = () => {
     if (!currentSelectedChara) {
       alert("キャラクターを先に選択してください");
@@ -74,7 +75,6 @@ function App() {
     }
     setGameStatus("MOVE_SELECTION");
   };
-
   const handleAttack = () => {
     if (!currentSelectedChara) {
       alert("キャラクターを先に選択してください");
@@ -82,7 +82,6 @@ function App() {
     }
     setGameStatus("ATTACK_SELECTION");
   };
-
   const onClickFighter = (clickedFighter) => {
     setCurrentSelectedChara(clickedFighter);
     setGameStatus("ACTION_SELECTION");

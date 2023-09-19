@@ -7,10 +7,12 @@ const MakeHEX = ({
   row,
   col,
   allCharactersStatus,
+  existSelectedChara,
   existChara,
   selectedChara,
   canMove,
   onMove,
+  canAttack,
   onFinish,
 }) => {
   //中心点より各頂点への座標を計算
@@ -28,15 +30,18 @@ const MakeHEX = ({
 
   const handleClick = () => {
     // クリック時の処理 キャラの移動
-    if (canMove) {
+    if (canMove && !existChara) {
       onMove(allCharactersStatus, selectedChara, row, col);
+      onFinish();
+    } else if (existChara && canAttack) {
       onFinish();
     }
   };
 
   const getPolygonColor = () => {
-    if (existChara) return "red";
+    if (existSelectedChara) return "blue";
     if (canMove) return "yellow";
+    if (canAttack) return "red";
     return "lightgreen";
   };
 
