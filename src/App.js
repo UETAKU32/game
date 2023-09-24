@@ -94,6 +94,54 @@ function App() {
     setGameStatus("CHARACTER_SELECTION");
   };
 
+  //座標からFighterを検索する
+  const findFighertByCoordinate = (row, col) => {
+    for (const chara of allCharactersStatus.teamA) {
+      if (chara.row == row && chara.col == col) {
+        return chara;
+      }
+    }
+    for (const chara of allCharactersStatus.teamB) {
+      if (chara.row == row && chara.col == col) {
+        return chara;
+      }
+    }
+    // 一致するキャラクターが見つからない場合
+    return null;
+  }
+
+  //ダメージを発生させてHPを減少させる
+  const couseDamage = (allCharactersStatus, attackFighter, defenceFighter) => {
+    const damage = attackFighter.move.dmg;
+    const remainedHP = defenceFighter.hp - damage;
+    const updatedTeamA = allCharactersStatus.teamA.map((chara) => {
+      if (chara.name === defenceFighter.name) {
+        return { ...chara, hp: remainedHP };
+      }
+      return chara;
+    });
+    const updatedTeamB = allCharactersStatus.teamB.map((chara) => {
+      if (chara.name === defenceFighter.name) {
+        return { ...chara, hp: remainedHP };
+      }
+      return chara;
+    });
+    setAllCharactersStatus({ teamA: updatedTeamA, teamB: updatedTeamB });
+  }
+
+  //攻撃対象の座標からバトルを実行させる
+  const duel = (allCharactersStatus,attackFighter,row,col) =>{
+    let defenceFighter = findFighertByCoordinate(row,col);
+    if (defenceFighter) {
+      couseDamage(allCharactersStatus,attackFighter,defenceFighter);
+      turnFinish();
+      defenceFighter = null;
+    }else{
+      return
+    }
+  }
+
+
   return (
     <div className="container">
       <div className="row">
@@ -126,7 +174,9 @@ function App() {
             selectedChara={currentSelectedChara}
             gameStatus={gameStatus}
             onMove={coordinateChange}
+            onDuel={duel}
             onFinish={turnFinish}
+
           />
         </div>
         <TeamFighters

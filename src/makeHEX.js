@@ -7,6 +7,7 @@ const MakeHEX = ({
   row,
   col,
   allCharactersStatus,
+  gameStatus,
   existSelectedChara,
   existChara,
   selectedChara,
@@ -14,6 +15,7 @@ const MakeHEX = ({
   onMove,
   canAttack,
   onFinish,
+  onDuel,
 }) => {
   //中心点より各頂点への座標を計算
   const points = [
@@ -29,12 +31,16 @@ const MakeHEX = ({
   const pointsString = points.map((point) => point.join(",")).join(" ");
 
   const handleClick = () => {
-    // クリック時の処理 キャラの移動
-    if (canMove && !existChara) {
+    // クリック時の処理
+    if (existChara && gameStatus === "CHARACTER_SELECTION") {
+
+      //todo キャラを選択した状態にするを実装
+
+    } else if (canMove && !existChara) {
       onMove(allCharactersStatus, selectedChara, row, col);
       onFinish();
     } else if (existChara && canAttack) {
-      onFinish();
+      onDuel(allCharactersStatus, selectedChara, row, col)
     }
   };
 

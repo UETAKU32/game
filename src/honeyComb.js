@@ -2,6 +2,7 @@ import React from "react";
 import MakeHEX from "./makeHEX";
 import FightersDisplay from "./FightersDisplay";
 
+
 const HoneyComb = ({
   size,
   rows,
@@ -11,6 +12,7 @@ const HoneyComb = ({
   gameStatus,
   onMove,
   onFinish,
+  onDuel,
 }) => {
   const honeycomb = [];
 
@@ -116,6 +118,7 @@ const HoneyComb = ({
             row={row}
             col={col}
             allCharactersStatus={allCharactersStatus}
+            gameStatus={gameStatus}
             existSelectedChara={existSelectedChara}
             existChara={existChara}
             selectedChara={selectedChara}
@@ -123,6 +126,7 @@ const HoneyComb = ({
             onMove={onMove}
             canAttack={canAttack}
             onFinish={onFinish}
+            onDuel={onDuel}
           />
         </>
       );
