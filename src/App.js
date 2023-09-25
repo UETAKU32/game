@@ -11,7 +11,7 @@ import { useState } from "react";
 
 function App() {
   //キャラクターデータをuseStateに宣言
-  const [allCharactersStatus, setAllCharactersStatus] = useState({
+  const [allCharactersStatus, setAllCharactersStatusOrigin] = useState({
     teamA: teamA.map((chara) => ({
       name: chara.name,
       hp: chara.hp,
@@ -35,6 +35,35 @@ function App() {
       col: Math.floor(Math.random() * 8),
     })),
   });
+
+  const setAllCharactersStatus = ({ teamA, teamB }) => {
+    setAllCharactersStatusOrigin({
+      teamA: teamA.map(
+        ({ name, hp, agl, def, move, image, disable, row, col }) => ({
+          name,
+          hp: hp > 0 ? hp : 0,
+          agl,
+          def,
+          move,
+          image,
+          disable,
+          row,
+          col,
+        })
+      ),
+      teamB: teamB.map((chara) => ({
+        name: chara.name,
+        hp: chara.hp > 0 ? chara.hp : 0,
+        agl: chara.agl,
+        def: chara.def,
+        move: chara.move,
+        image: chara.image,
+        disable: chara.disable,
+        row: chara.row,
+        col: chara.col,
+      })),
+    });
+  };
 
   //キャラを選択している状態を保存する
   const [currentSelectedChara, setCurrentSelectedChara] = useState(null);
@@ -108,7 +137,7 @@ function App() {
     }
     // 一致するキャラクターが見つからない場合
     return null;
-  }
+  };
 
   //ダメージを発生させてHPを減少させる
   const couseDamage = (allCharactersStatus, attackFighter, defenceFighter) => {
@@ -127,20 +156,19 @@ function App() {
       return chara;
     });
     setAllCharactersStatus({ teamA: updatedTeamA, teamB: updatedTeamB });
-  }
+  };
 
   //攻撃対象の座標からバトルを実行させる
-  const duel = (allCharactersStatus,attackFighter,row,col) =>{
-    let defenceFighter = findFighertByCoordinate(row,col);
+  const duel = (allCharactersStatus, attackFighter, row, col) => {
+    let defenceFighter = findFighertByCoordinate(row, col);
     if (defenceFighter) {
-      couseDamage(allCharactersStatus,attackFighter,defenceFighter);
+      couseDamage(allCharactersStatus, attackFighter, defenceFighter);
       turnFinish();
       defenceFighter = null;
-    }else{
-      return
+    } else {
+      return;
     }
-  }
-
+  };
 
   return (
     <div className="container">
@@ -176,7 +204,6 @@ function App() {
             onMove={coordinateChange}
             onDuel={duel}
             onFinish={turnFinish}
-
           />
         </div>
         <TeamFighters
