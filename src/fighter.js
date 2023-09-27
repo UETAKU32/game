@@ -1,22 +1,22 @@
 import React from "react";
 
-const Fighter = ({ isTeamA, character, onClick, turnCount}) => {
+const Fighter = ({ isTeamA, character, onClick, turnCount }) => {
   const teamColor = isTeamA ? "bg-danger" : "bg-primary";
   const handleClick = () => {
     onClick(character);
   };
 
-  
+
   const style = {
-    pointerEvents: turnCount%2 == isTeamA ? 'auto' : 'none',
+    pointerEvents: turnCount % 2 == isTeamA && character.hp != 0 ? 'auto' : 'none',
   };
 
   return (
     <div
-     className={`card text-white mb-1 ${teamColor}`} 
-     onClick={handleClick}
-     style={style}
-     >
+      className={`card text-white mb-1 ${character.hp === 0 ? "bg-dark" : teamColor}`}
+      onClick={handleClick}
+      style={style}
+    >
       <div className="card-header">{character.name}</div>
       <div className="card-body">
         <p className="card-text">体: {character.hp}</p>
