@@ -7,7 +7,7 @@ import UnderBar from "./underBar";
 import HoneyComb from "./honeyComb";
 import { teamA } from "./data/fightersData";
 import { teamB } from "./data/fightersData";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 function App() {
   //キャラクターデータをuseStateに宣言
@@ -64,6 +64,11 @@ function App() {
       })),
     });
   };
+
+  const [victoryPoints, setVictoryPoints] = useState({
+    teamA: 0,
+    teamB: 0
+  })
 
   //キャラを選択している状態を保存する
   const [currentSelectedChara, setCurrentSelectedChara] = useState(null);
@@ -170,58 +175,86 @@ function App() {
     }
   };
 
-  return (
-    <div className="container">
-      <div className="row">
-        <div className="col-2">
-          <TeamInfo isTeamA={true} />
-        </div>
-        <div className="col">
-          <TurnInfo turnCount={turnCount} gameStatus={gameStatus} />
-        </div>
-        <div className="col">
-          <BattleInfo turnCount={turnCount} />
-        </div>
-        <div className="col-2">
-          <TeamInfo isTeamA={false} />
-        </div>
-      </div>
-      <div className="row">
-        <TeamFighters
+  useEffect(() => {
+    allCharactersStatus.teamA.forEach((chara) => {
+      if (chara.hp === 0) {
+        setVictoryPoints((prevPoints) => ({
+          ...prevPoints,
+          teamB: prevPoints.teamB + 1
+        }));
+      }
+    });
+  }, [allCharactersStatus.teamA, setVictoryPoints]);
+  useEffect(() => {
+    allCharactersStatus.teamB.forEach((chara) => {
+      if (chara.hp === 0) {
+        setVictoryPoints((prevPoints) => ({
+          ...prevPoints,
+          teamA: prevPoints.teamA + 1
+        }));
+      }
+    });
+  }, [allCharactersStatus.teamA, setVictoryPoints]);
+
+
+return (
+  <div className="container">
+    <div className="row">
+      <div className="col-2">
+        <TeamInfo
           isTeamA={true}
-          characters={allCharactersStatus.teamA}
-          onClickFighter={onClickFighter}
-          turnCount={turnCount}
-        />
-        <div className="col-8 border border-3 border-dark">
-          <HoneyComb
-            size={55}
-            rows={8}
-            cols={8}
-            allCharactersStatus={allCharactersStatus}
-            selectedChara={currentSelectedChara}
-            gameStatus={gameStatus}
-            onMove={coordinateChange}
-            onDuel={duel}
-            onFinish={turnFinish}
-          />
-        </div>
-        <TeamFighters
-          isTeamA={false}
-          characters={allCharactersStatus.teamB}
-          onClickFighter={setCurrentSelectedChara}
-          turnCount={turnCount}
+          victoryPoints={victoryPoints}
         />
       </div>
-      <UnderBar
-        allCharactersStatus={allCharactersStatus}
-        onChange={coordinateChange}
-        onMove={handleMove}
-        onAttack={handleAttack}
+      <div className="col">
+        <TurnInfo turnCount={turnCount} gameStatus={gameStatus} />
+      </div>
+      <div className="col">
+        <BattleInfo turnCount={turnCount} />
+      </div>
+      <div className="col-2">
+        <TeamInfo
+          isTeamA={false}
+          victoryPoints={victoryPoints}
+        />
+      </div>
+    </div>
+    <div className="row">
+      <TeamFighters
+        isTeamA={true}
+        characters={allCharactersStatus.teamA}
+        onClickFighter={onClickFighter}
+        turnCount={turnCount}
+      />
+      <div className="col-8 border border-3 border-dark">
+        <HoneyComb
+          size={55}
+          rows={8}
+          cols={8}
+          allCharactersStatus={allCharactersStatus}
+          selectedChara={currentSelectedChara}
+          gameStatus={gameStatus}
+          onMove={coordinateChange}
+          onDuel={duel}
+          onFinish={turnFinish}
+        />
+      </div>
+      <TeamFighters
+        isTeamA={false}
+        characters={allCharactersStatus.teamB}
+        onClickFighter={setCurrentSelectedChara}
         turnCount={turnCount}
       />
     </div>
-  );
+    <UnderBar
+      allCharactersStatus={allCharactersStatus}
+      onChange={coordinateChange}
+      onMove={handleMove}
+      onAttack={handleAttack}
+      turnCount={turnCount}
+    />
+  </div>
+);
 }
 
 export default App;
