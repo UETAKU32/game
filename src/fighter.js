@@ -6,14 +6,16 @@ const Fighter = ({ isTeamA, character, onClick, turnCount }) => {
     onClick(character);
   };
 
-
   const style = {
-    pointerEvents: turnCount % 2 == isTeamA && character.hp != 0 ? 'auto' : 'none',
+    pointerEvents:
+      turnCount % 2 == isTeamA && character.hp > 0 ? "auto" : "none",
   };
 
   return (
     <div
-      className={`card text-white mb-1 ${character.hp === 0 ? "bg-dark" : teamColor}`}
+      className={`card text-white mb-1 ${
+        character.hp > 0 ? teamColor : "bg-dark"
+      }`}
       onClick={handleClick}
       style={style}
     >
