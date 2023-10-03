@@ -8,7 +8,7 @@ export const moves = {
     magic: {
         name: "魔法",
         atk: 4,
-        dmg: 2,
+        dmg: 99,
         range: 4,
     },
     sword: {

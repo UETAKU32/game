@@ -22,6 +22,7 @@ function App() {
       disable: 0,
       row: Math.floor(Math.random() * 8),
       col: Math.floor(Math.random() * 8),
+      isDead: false,
     })),
     teamB: teamB.map((chara) => ({
       name: chara.name,
@@ -33,13 +34,14 @@ function App() {
       disable: 0,
       row: Math.floor(Math.random() * 8),
       col: Math.floor(Math.random() * 8),
+      isDead: false,
     })),
   });
 
   const setAllCharactersStatus = ({ teamA, teamB }) => {
     setAllCharactersStatusOrigin({
       teamA: teamA.map(
-        ({ name, hp, agl, def, move, image, disable, row, col }) => ({
+        ({ name, hp, agl, def, move, image, disable, row, col, isDead }) => ({
           name,
           hp: hp > 0 ? hp : 0,
           agl,
@@ -49,25 +51,30 @@ function App() {
           disable,
           row,
           col,
+          isDead,
         })
       ),
-      teamB: teamB.map((chara) => ({
-        name: chara.name,
-        hp: chara.hp > 0 ? chara.hp : 0,
-        agl: chara.agl,
-        def: chara.def,
-        move: chara.move,
-        image: chara.image,
-        disable: chara.disable,
-        row: chara.row,
-        col: chara.col,
-      })),
+      teamB: teamB.map(
+        ({ name, hp, agl, def, move, image, disable, row, col, isDead }) => ({
+          name,
+          hp: hp > 0 ? hp : 0,
+          agl,
+          def,
+          move,
+          image,
+          disable,
+          row,
+          col,
+          isDead,
+        })
+      ),
     });
   };
 
+  //勝利点の記録
   const [victoryPoints, setVictoryPoints] = useState({
     teamA: 0,
-    teamB: 0
+    teamB: 0,
   })
 
   //キャラを選択している状態を保存する
@@ -175,6 +182,8 @@ function App() {
     }
   };
 
+
+  //hpが0で得点を加算する
   useEffect(() => {
     allCharactersStatus.teamA.forEach((chara) => {
       if (chara.hp === 0) {
@@ -197,64 +206,84 @@ function App() {
   }, [allCharactersStatus.teamA, setVictoryPoints]);
 
 
-return (
-  <div className="container">
-    <div className="row">
-      <div className="col-2">
-        <TeamInfo
+  //ゲームの終了に関する機能
+  const maxTurn = 14;
+  let victoryPlayer = null;
+  if (victoryPoints.teamA > victoryPoints.teamB) {
+    victoryPlayer = "TeamA is win"
+  } else if (victoryPoints.teamA < victoryPoints.teamB) {
+    victoryPlayer = "TeamB is win"
+  } else {
+    victoryPlayer = "Draw"
+  }
+  useEffect(() => {
+    if (turnCount === maxTurn) {
+      alert(victoryPlayer);
+    }
+  })
+
+  return (
+    <div className="container">
+      <div className="row">
+        <div className="col-2">
+          <TeamInfo
+            isTeamA={true}
+            victoryPoints={victoryPoints}
+          />
+        </div>
+        <div className="col">
+          <TurnInfo
+            turnCount={turnCount}
+            gameStatus={gameStatus}
+            maxTurn={maxTurn}
+          />
+        </div>
+        <div className="col">
+          <BattleInfo turnCount={turnCount} />
+        </div>
+        <div className="col-2">
+          <TeamInfo
+            isTeamA={false}
+            victoryPoints={victoryPoints}
+          />
+        </div>
+      </div>
+      <div className="row">
+        <TeamFighters
           isTeamA={true}
-          victoryPoints={victoryPoints}
+          characters={allCharactersStatus.teamA}
+          onClickFighter={onClickFighter}
+          turnCount={turnCount}
         />
-      </div>
-      <div className="col">
-        <TurnInfo turnCount={turnCount} gameStatus={gameStatus} />
-      </div>
-      <div className="col">
-        <BattleInfo turnCount={turnCount} />
-      </div>
-      <div className="col-2">
-        <TeamInfo
+        <div className="col-8 border border-3 border-dark">
+          <HoneyComb
+            size={55}
+            rows={8}
+            cols={8}
+            allCharactersStatus={allCharactersStatus}
+            selectedChara={currentSelectedChara}
+            gameStatus={gameStatus}
+            onMove={coordinateChange}
+            onDuel={duel}
+            onFinish={turnFinish}
+          />
+        </div>
+        <TeamFighters
           isTeamA={false}
-          victoryPoints={victoryPoints}
+          characters={allCharactersStatus.teamB}
+          onClickFighter={setCurrentSelectedChara}
+          turnCount={turnCount}
         />
       </div>
-    </div>
-    <div className="row">
-      <TeamFighters
-        isTeamA={true}
-        characters={allCharactersStatus.teamA}
-        onClickFighter={onClickFighter}
-        turnCount={turnCount}
-      />
-      <div className="col-8 border border-3 border-dark">
-        <HoneyComb
-          size={55}
-          rows={8}
-          cols={8}
-          allCharactersStatus={allCharactersStatus}
-          selectedChara={currentSelectedChara}
-          gameStatus={gameStatus}
-          onMove={coordinateChange}
-          onDuel={duel}
-          onFinish={turnFinish}
-        />
-      </div>
-      <TeamFighters
-        isTeamA={false}
-        characters={allCharactersStatus.teamB}
-        onClickFighter={setCurrentSelectedChara}
+      <UnderBar
+        allCharactersStatus={allCharactersStatus}
+        onChange={coordinateChange}
+        onMove={handleMove}
+        onAttack={handleAttack}
         turnCount={turnCount}
       />
     </div>
-    <UnderBar
-      allCharactersStatus={allCharactersStatus}
-      onChange={coordinateChange}
-      onMove={handleMove}
-      onAttack={handleAttack}
-      turnCount={turnCount}
-    />
-  </div>
-);
+  );
 }
 
 export default App;
