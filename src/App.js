@@ -38,44 +38,71 @@ function App() {
     })),
   });
 
-  const setAllCharactersStatus = ({ teamA, teamB }) => {
-    setAllCharactersStatusOrigin({
-      teamA: teamA.map(
-        ({ name, hp, agl, def, move, image, disable, row, col, isDead }) => ({
-          name,
-          hp: hp > 0 ? hp : 0,
-          agl,
-          def,
-          move,
-          image,
-          disable,
-          row,
-          col,
-          isDead,
-        })
-      ),
-      teamB: teamB.map(
-        ({ name, hp, agl, def, move, image, disable, row, col, isDead }) => ({
-          name,
-          hp: hp > 0 ? hp : 0,
-          agl,
-          def,
-          move,
-          image,
-          disable,
-          row,
-          col,
-          isDead,
-        })
-      ),
-    });
-  };
-
   //勝利点の記録
   const [victoryPoints, setVictoryPoints] = useState({
-    teamA: 0,
+    teamA: 0, //Review: teamAはteamAのキャラ配列と命名が被るため、ややこしくなりそう。teamAPoint？とかにしたほうがいいかも
     teamB: 0,
-  })
+  });
+
+  const setAllCharactersStatus = ({ teamA: newTeamA, teamB: newTeamB }) => {
+    console.log("setAllCharacters has called!"); //tmp: １回呼ばれる。正しい
+
+    //例、prevTeamA(直前のチームA)で生きてたが、newTeamA(新たにセットされるチームA)で死んでるやつがいれば
+    //チームBに１点
+    setAllCharactersStatusOrigin(({ teamA: prevTeamA, teamB: prevTeamB }) => {
+      //FIXME: 意図せず２回呼ばれる。解決しない場合は、勝利ポイント加算処理を、攻撃時に行う？
+      console.log("setAllCharactersStatusOrigin has called!"); //tmp: 2回呼ばれる。こいつがおかしい
+      const deadCountA =
+        newTeamA.filter(({ hp }) => hp <= 0).length -
+        prevTeamA.filter(({ hp }) => hp <= 0).length;
+      const deadCountB =
+        newTeamB.filter(({ hp }) => hp <= 0).length -
+        prevTeamB.filter(({ hp }) => hp <= 0).length;
+      console.log({
+        deadCountA,
+        prevTeamBPoint: prevTeamB.teamB,
+        prevDeadANum: prevTeamA.filter(({ hp }) => hp <= 0).length,
+        newDeadANum: newTeamA.filter(({ hp }) => hp <= 0).length,
+      });
+      setVictoryPoints((prev) => {
+        return {
+          teamA: prev.teamA + deadCountB,
+          teamB: prev.teamB + deadCountA,
+        };
+      });
+
+      return {
+        teamA: newTeamA.map(
+          ({ name, hp, agl, def, move, image, disable, row, col, isDead }) => ({
+            name,
+            hp: hp > 0 ? hp : 0,
+            agl,
+            def,
+            move,
+            image,
+            disable,
+            row,
+            col,
+            isDead,
+          })
+        ),
+        teamB: newTeamB.map(
+          ({ name, hp, agl, def, move, image, disable, row, col, isDead }) => ({
+            name,
+            hp: hp > 0 ? hp : 0,
+            agl,
+            def,
+            move,
+            image,
+            disable,
+            row,
+            col,
+            isDead,
+          })
+        ),
+      };
+    });
+  };
 
   //キャラを選択している状態を保存する
   const [currentSelectedChara, setCurrentSelectedChara] = useState(null);
@@ -152,21 +179,22 @@ function App() {
   };
 
   //ダメージを発生させてHPを減少させる
-  const couseDamage = (allCharactersStatus, attackFighter, defenceFighter) => {
+  const couseDamage = (allCharactersStatus, attackFighter, defenseFighter) => {
     const damage = attackFighter.move.dmg;
-    const remainedHP = defenceFighter.hp - damage;
+    const remainedHP = defenseFighter.hp - damage;
     const updatedTeamA = allCharactersStatus.teamA.map((chara) => {
-      if (chara.name === defenceFighter.name) {
+      if (chara.name === defenseFighter.name) {
         return { ...chara, hp: remainedHP };
       }
       return chara;
     });
     const updatedTeamB = allCharactersStatus.teamB.map((chara) => {
-      if (chara.name === defenceFighter.name) {
+      if (chara.name === defenseFighter.name) {
         return { ...chara, hp: remainedHP };
       }
       return chara;
     });
+    //NOTE:defenseFighterのHPが0以下になれば、攻撃側のポイント加算
     setAllCharactersStatus({ teamA: updatedTeamA, teamB: updatedTeamB });
   };
 
@@ -182,54 +210,25 @@ function App() {
     }
   };
 
-
-  //hpが0で得点を加算する
-  useEffect(() => {
-    allCharactersStatus.teamA.forEach((chara) => {
-      if (chara.hp === 0) {
-        setVictoryPoints((prevPoints) => ({
-          ...prevPoints,
-          teamB: prevPoints.teamB + 1
-        }));
-      }
-    });
-  }, [allCharactersStatus.teamA, setVictoryPoints]);
-  useEffect(() => {
-    allCharactersStatus.teamB.forEach((chara) => {
-      if (chara.hp === 0) {
-        setVictoryPoints((prevPoints) => ({
-          ...prevPoints,
-          teamA: prevPoints.teamA + 1
-        }));
-      }
-    });
-  }, [allCharactersStatus.teamA, setVictoryPoints]);
-
-
   //ゲームの終了に関する機能
   const maxTurn = 14;
   let victoryPlayer = null;
   if (victoryPoints.teamA > victoryPoints.teamB) {
-    victoryPlayer = "TeamA is win"
+    victoryPlayer = "TeamA is win";
   } else if (victoryPoints.teamA < victoryPoints.teamB) {
-    victoryPlayer = "TeamB is win"
+    victoryPlayer = "TeamB is win";
   } else {
-    victoryPlayer = "Draw"
+    victoryPlayer = "Draw";
   }
-  useEffect(() => {
-    if (turnCount === maxTurn) {
-      alert(victoryPlayer);
-    }
-  })
+  if (maxTurn <= turnCount) {
+    alert(victoryPlayer);
+  }
 
   return (
     <div className="container">
       <div className="row">
         <div className="col-2">
-          <TeamInfo
-            isTeamA={true}
-            victoryPoints={victoryPoints}
-          />
+          <TeamInfo isTeamA={true} victoryPoints={victoryPoints} />
         </div>
         <div className="col">
           <TurnInfo
@@ -242,10 +241,7 @@ function App() {
           <BattleInfo turnCount={turnCount} />
         </div>
         <div className="col-2">
-          <TeamInfo
-            isTeamA={false}
-            victoryPoints={victoryPoints}
-          />
+          <TeamInfo isTeamA={false} victoryPoints={victoryPoints} />
         </div>
       </div>
       <div className="row">
