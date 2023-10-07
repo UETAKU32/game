@@ -45,63 +45,54 @@ function App() {
   });
 
   const setAllCharactersStatus = ({ teamA: newTeamA, teamB: newTeamB }) => {
-    console.log("setAllCharacters has called!"); //tmp: １回呼ばれる。正しい
+    console.log("setAllCharacters has called!");
 
-    //例、prevTeamA(直前のチームA)で生きてたが、newTeamA(新たにセットされるチームA)で死んでるやつがいれば
-    //チームBに１点
-    setAllCharactersStatusOrigin(({ teamA: prevTeamA, teamB: prevTeamB }) => {
-      //FIXME: 意図せず２回呼ばれる。解決しない場合は、勝利ポイント加算処理を、攻撃時に行う？
-      console.log("setAllCharactersStatusOrigin has called!"); //tmp: 2回呼ばれる。こいつがおかしい
-      const deadCountA =
-        newTeamA.filter(({ hp }) => hp <= 0).length -
-        prevTeamA.filter(({ hp }) => hp <= 0).length;
-      const deadCountB =
-        newTeamB.filter(({ hp }) => hp <= 0).length -
-        prevTeamB.filter(({ hp }) => hp <= 0).length;
-      console.log({
-        deadCountA,
-        prevTeamBPoint: prevTeamB.teamB,
-        prevDeadANum: prevTeamA.filter(({ hp }) => hp <= 0).length,
-        newDeadANum: newTeamA.filter(({ hp }) => hp <= 0).length,
-      });
-      setVictoryPoints((prev) => {
-        return {
-          teamA: prev.teamA + deadCountB,
-          teamB: prev.teamB + deadCountA,
-        };
-      });
+    const deadCountA =
+      newTeamA.filter(({ hp }) => hp <= 0).length -
+      allCharactersStatus.teamA.filter(({ hp }) => hp <= 0).length;
+    const deadCountB =
+      newTeamB.filter(({ hp }) => hp <= 0).length -
+      allCharactersStatus.teamB.filter(({ hp }) => hp <= 0).length;
 
-      return {
-        teamA: newTeamA.map(
-          ({ name, hp, agl, def, move, image, disable, row, col, isDead }) => ({
-            name,
-            hp: hp > 0 ? hp : 0,
-            agl,
-            def,
-            move,
-            image,
-            disable,
-            row,
-            col,
-            isDead,
-          })
-        ),
-        teamB: newTeamB.map(
-          ({ name, hp, agl, def, move, image, disable, row, col, isDead }) => ({
-            name,
-            hp: hp > 0 ? hp : 0,
-            agl,
-            def,
-            move,
-            image,
-            disable,
-            row,
-            col,
-            isDead,
-          })
-        ),
-      };
-    });
+
+    // ポイントの更新を計算
+    const updatedPoints = {
+      teamA: victoryPoints.teamA + deadCountB,
+      teamB: victoryPoints.teamB + deadCountA,
+    };
+
+    // 更新されたポイントを設定
+    setVictoryPoints(updatedPoints);
+
+    // ここで新しいチームの状態を更新
+    const updatedTeamA = newTeamA.map(({ name, hp, agl, def, move, image, disable, row, col, isDead }) => ({
+      name,
+      hp: hp > 0 ? hp : 0,
+      agl,
+      def,
+      move,
+      image,
+      disable,
+      row,
+      col,
+      isDead,
+    }));
+
+    const updatedTeamB = newTeamB.map(({ name, hp, agl, def, move, image, disable, row, col, isDead }) => ({
+      name,
+      hp: hp > 0 ? hp : 0,
+      agl,
+      def,
+      move,
+      image,
+      disable,
+      row,
+      col,
+      isDead,
+    }));
+
+    // ここで新しいチームの状態を設定
+    setAllCharactersStatusOrigin({ teamA: updatedTeamA, teamB: updatedTeamB });
   };
 
   //キャラを選択している状態を保存する
