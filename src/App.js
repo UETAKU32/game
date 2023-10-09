@@ -64,7 +64,7 @@ function App() {
     // 更新されたポイントを設定
     setVictoryPoints(updatedPoints);
 
-    // ここで新しいチームの状態を更新
+    // 新しいチームの状態を更新
     const updatedTeamA = newTeamA.map(({ name, hp, agl, def, move, image, disable, row, col, isDead }) => ({
       name,
       hp: hp > 0 ? hp : 0,
@@ -91,7 +91,7 @@ function App() {
       isDead,
     }));
 
-    // ここで新しいチームの状態を設定
+    // 新しいチームの状態を設定
     setAllCharactersStatusOrigin({ teamA: updatedTeamA, teamB: updatedTeamB });
   };
 
@@ -169,9 +169,26 @@ function App() {
     return null;
   };
 
+  //ダメージ計算
+  const calcDamage = (atk, def, dmg) => {
+    let netDamage = 0;
+    const successBorder = 4 - atk + def;
+    const randomNumber = Math.random() * 8;
+    if (randomNumber >= 7) {
+      //クリティカルヒット（通常のダメージより1高い)
+      netDamage = dmg + 1;
+    } else if (randomNumber >= successBorder) {
+      netDamage = dmg;
+    }
+    return netDamage
+  }
+
   //ダメージを発生させてHPを減少させる
   const couseDamage = (allCharactersStatus, attackFighter, defenseFighter) => {
-    const damage = attackFighter.move.dmg;
+
+    //ダメージ計算の関数にて、発生したダメージを計算する
+    const damage = calcDamage(attackFighter.move.atk, defenseFighter.def, attackFighter.move.dmg);
+
     const remainedHP = defenseFighter.hp - damage;
     const updatedTeamA = allCharactersStatus.teamA.map((chara) => {
       if (chara.name === defenseFighter.name) {
