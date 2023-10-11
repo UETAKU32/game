@@ -2,27 +2,7 @@ import React from "react";
 
 const { useState } = React;
 
-const UnderBar = ({ allCharactersStatus, onChange, onMove, onAttack, turnCount }) => {
-
-  const [selectedCharacter, setSelectedCharacter] = useState("");
-
-  const hpDecrease = () => {
-    if (selectedCharacter) {
-      handleTeamChange(selectedCharacter);
-      setSelectedCharacter("");
-    }
-  };
-
-  const handleTeamChange = (characterName) => {
-    const updatedTeam = allCharactersStatus.map((chara) => {
-      if (chara.name === characterName) {
-        const updatedHP = Math.max(0, chara.hp - 1);
-        return { ...chara, hp: updatedHP };
-      }
-      return chara;
-    });
-    onChange(updatedTeam);
-  };
+const UnderBar = ({ onMove, onAttack, turnCount ,information}) => {
 
   const teamColor = turnCount % 2 == 1 ? 'bg-danger' : 'bg-primary';
   const currentPlayer = turnCount % 2 == 1 ? 'TeamA' : 'TeamB';
@@ -56,25 +36,11 @@ const UnderBar = ({ allCharactersStatus, onChange, onMove, onAttack, turnCount }
         </div>
       </div>
       <div className="col">
-        <select
-          value={selectedCharacter}
-          onChange={(e) => setSelectedCharacter(e.target.value)}
-        >
-          <option value="">キャラクターを選択してください</option>
-          {allCharactersStatus.teamA.map((chara) => (
-            <option key={chara.name} value={chara.name}>
-              {chara.name}
-            </option>
-          ))}
-          {allCharactersStatus.teamB.map((chara) => (
-            <option key={chara.name} value={chara.name}>
-              {chara.name}
-            </option>
-          ))}
-        </select>
-        <button onClick={hpDecrease} disabled={!selectedCharacter}>
-          体力を減らす
-        </button>
+        <div className="card text-white bg-success mb-2">
+          <div className="card-body">
+            <p className="card-text">{information} </p>
+          </div>
+        </div>
       </div>
     </div>
   );

@@ -1,6 +1,6 @@
 import React from "react";
 
-const TurnInfo = ({ turnCount, gameStatus ,maxTurn}) => {
+const TurnInfo = ({ turnCount, gameStatus, maxTurn }) => {
   return (
     <div className="card text-white bg-success mb-2">
       <div className="card-header">Turn Info [ {gameStatus}(debug用表示) ]</div>

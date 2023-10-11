@@ -7,7 +7,7 @@ import UnderBar from "./underBar";
 import HoneyComb from "./honeyComb";
 import { teamA } from "./data/fightersData";
 import { teamB } from "./data/fightersData";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 function App() {
   //キャラクターデータをuseStateに宣言
@@ -20,7 +20,7 @@ function App() {
       move: chara.move,
       image: chara.image,
       disable: 0,
-      row: Math.floor(Math.random() * 8),
+      row: Math.floor(Math.random() * 4),
       col: Math.floor(Math.random() * 8),
       isDead: false,
     })),
@@ -32,7 +32,7 @@ function App() {
       move: chara.move,
       image: chara.image,
       disable: 0,
-      row: Math.floor(Math.random() * 8),
+      row: Math.floor(Math.random() * 4) + 4,
       col: Math.floor(Math.random() * 8),
       isDead: false,
     })),
@@ -40,12 +40,11 @@ function App() {
 
   //勝利点の記録
   const [victoryPoints, setVictoryPoints] = useState({
-    teamA: 0, //Review: teamAはteamAのキャラ配列と命名が被るため、ややこしくなりそう。teamAPoint？とかにしたほうがいいかも
-    teamB: 0,
+    teamAPoints: 0,
+    teamBPoints: 0,
   });
 
   const setAllCharactersStatus = ({ teamA: newTeamA, teamB: newTeamB }) => {
-    console.log("setAllCharacters has called!");
 
     const deadCountA =
       newTeamA.filter(({ hp }) => hp <= 0).length -
@@ -54,11 +53,10 @@ function App() {
       newTeamB.filter(({ hp }) => hp <= 0).length -
       allCharactersStatus.teamB.filter(({ hp }) => hp <= 0).length;
 
-
     // ポイントの更新を計算
     const updatedPoints = {
-      teamA: victoryPoints.teamA + deadCountB,
-      teamB: victoryPoints.teamB + deadCountA,
+      teamAPoints: victoryPoints.teamAPoints + deadCountB,
+      teamBPoints: victoryPoints.teamBPoints + deadCountA,
     };
 
     // 更新されたポイントを設定
@@ -77,7 +75,6 @@ function App() {
       col,
       isDead,
     }));
-
     const updatedTeamB = newTeamB.map(({ name, hp, agl, def, move, image, disable, row, col, isDead }) => ({
       name,
       hp: hp > 0 ? hp : 0,
@@ -100,6 +97,9 @@ function App() {
 
   //ターン数をカウントする
   const [turnCount, setTurnCount] = useState(1);
+
+  //バトルに関する情報を保持する
+  const [information, setInformation] = useState("");
 
   //「ユーザに求める操作」を管理するstate
   //CHARACTER_SELECTION -> ACTION_SELECTION -> MOVE_SELECTION -> NEXT -> CHARACTER_SELECTION -> ACTION_SELECTION -> ..
@@ -170,16 +170,22 @@ function App() {
   };
 
   //ダメージ計算
-  const calcDamage = (atk, def, dmg) => {
+  const calcDamage = (attackFighter, defenseFighter) => {
     let netDamage = 0;
-    const successBorder = 4 - atk + def;
+    let info = ""
+    const successBorder = 4 - attackFighter.move.atk + defenseFighter.def;
     const randomNumber = Math.random() * 8;
     if (randomNumber >= 7) {
       //クリティカルヒット（通常のダメージより1高い)
-      netDamage = dmg + 1;
+      netDamage = attackFighter.move.dmg + 1;
+      info = `${attackFighter.name}→${defenseFighter.name}　クリティカルヒット！`
     } else if (randomNumber >= successBorder) {
-      netDamage = dmg;
+      netDamage = attackFighter.move.dmg;
+      info = `${attackFighter.name}→${defenseFighter.name}　通常ヒット！`
+    }else{
+      info = `${attackFighter.name}→${defenseFighter.name}　ミス！`
     }
+    setInformation(info);
     return netDamage
   }
 
@@ -187,7 +193,7 @@ function App() {
   const couseDamage = (allCharactersStatus, attackFighter, defenseFighter) => {
 
     //ダメージ計算の関数にて、発生したダメージを計算する
-    const damage = calcDamage(attackFighter.move.atk, defenseFighter.def, attackFighter.move.dmg);
+    const damage = calcDamage(attackFighter, defenseFighter);
 
     const remainedHP = defenseFighter.hp - damage;
     const updatedTeamA = allCharactersStatus.teamA.map((chara) => {
@@ -221,9 +227,9 @@ function App() {
   //ゲームの終了に関する機能
   const maxTurn = 14;
   let victoryPlayer = null;
-  if (victoryPoints.teamA > victoryPoints.teamB) {
+  if (victoryPoints.teamAPoints > victoryPoints.teamBPoints) {
     victoryPlayer = "TeamA is win";
-  } else if (victoryPoints.teamA < victoryPoints.teamB) {
+  } else if (victoryPoints.teamAPoints < victoryPoints.teamBPoints) {
     victoryPlayer = "TeamB is win";
   } else {
     victoryPlayer = "Draw";
@@ -232,6 +238,7 @@ function App() {
     alert(victoryPlayer);
   }
 
+  //見た目に関する項目
   return (
     <div className="container">
       <div className="row">
@@ -285,6 +292,7 @@ function App() {
         onMove={handleMove}
         onAttack={handleAttack}
         turnCount={turnCount}
+        information={information}
       />
     </div>
   );
