@@ -178,12 +178,12 @@ function App() {
     if (randomNumber >= 7) {
       //クリティカルヒット（通常のダメージより1高い)
       netDamage = attackFighter.move.dmg + 1;
-      info = `${attackFighter.name}→${defenseFighter.name}　クリティカルヒット！`
+      info = `${attackFighter.name}→${defenseFighter.name} クリティカルヒット！`
     } else if (randomNumber >= successBorder) {
       netDamage = attackFighter.move.dmg;
-      info = `${attackFighter.name}→${defenseFighter.name}　通常ヒット！`
-    }else{
-      info = `${attackFighter.name}→${defenseFighter.name}　ミス！`
+      info = `${attackFighter.name}→${defenseFighter.name} 通常ヒット！`
+    } else {
+      info = `${attackFighter.name}→${defenseFighter.name} ミス！`
     }
     setInformation(info);
     return netDamage
@@ -198,12 +198,20 @@ function App() {
     const remainedHP = defenseFighter.hp - damage;
     const updatedTeamA = allCharactersStatus.teamA.map((chara) => {
       if (chara.name === defenseFighter.name) {
+        //キャラが戦闘不能になった場合は、rowとcolの情報をnullに設定
+        if (remainedHP <= 0) {
+          return { ...chara, hp: remainedHP, row: null, col: null }
+        }
         return { ...chara, hp: remainedHP };
       }
       return chara;
     });
     const updatedTeamB = allCharactersStatus.teamB.map((chara) => {
       if (chara.name === defenseFighter.name) {
+        //キャラが戦闘不能になった場合は、rowとcolの情報をnullに設定
+        if (remainedHP <= 0) {
+          return { ...chara, hp: remainedHP, row: null, col: null }
+        }
         return { ...chara, hp: remainedHP };
       }
       return chara;
@@ -214,11 +222,11 @@ function App() {
 
   //攻撃対象の座標からバトルを実行させる
   const duel = (allCharactersStatus, attackFighter, row, col) => {
-    let defenceFighter = findFighertByCoordinate(row, col);
-    if (defenceFighter) {
-      couseDamage(allCharactersStatus, attackFighter, defenceFighter);
+    let defenseFighter = findFighertByCoordinate(row, col);
+    if (defenseFighter) {
+      couseDamage(allCharactersStatus, attackFighter, defenseFighter);
       turnFinish();
-      defenceFighter = null;
+      defenseFighter = null;
     } else {
       return;
     }
