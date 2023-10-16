@@ -8,6 +8,7 @@ import HoneyComb from "./honeyComb";
 import { teamA } from "./data/fightersData";
 import { teamB } from "./data/fightersData";
 import { useState } from "react";
+import { Button } from "@mui/material";
 
 function App() {
   //キャラクターデータをuseStateに宣言
@@ -303,6 +304,7 @@ function App() {
         information={information}
       />
     </div>
+
   );
 }
 
